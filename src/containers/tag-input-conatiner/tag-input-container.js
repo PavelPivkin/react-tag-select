@@ -1,11 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
-import { Search, Grid, Header, Label } from 'semantic-ui-react'
-
-var options = options = ["apple", "mango", "grapes", "melon", "strawberry"].map(function(fruit){
-    return {label: fruit, value: fruit}
-});
-
+import { Search, Grid, Label } from 'semantic-ui-react'
+import TagInput from '../../components/tag-input/tag-input'
 const KeyCodes = {
     comma: 188,
     enter: 13,
@@ -31,7 +27,7 @@ const source =[
     }
 ]
 
-class TagInput extends React.Component {
+class TagInputContainer extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
@@ -48,7 +44,7 @@ class TagInput extends React.Component {
     handleResultSelect = (e, { result }) => this.setState({ value: '', tags: [...this.state.tags, result] })
 
     handleSearchChange = (e, { value }) => {
-        this.setState({ isLoading: true, value })
+        this.setState({ isLoading: true, value: value })
 
         setTimeout(() => {
             if (this.state.value.length < 1) return this.resetComponent()
@@ -59,13 +55,15 @@ class TagInput extends React.Component {
         })
     }
 
+
     findResults = (value) => {
         const re = new RegExp(_.escapeRegExp(value), 'i')
         const isMatch = result => {
-            return re.test(result.title) && this.state.tags.findIndex((item) => item.title === result.title) === -1;
+            return re.test(result.title) && this.state.tags.findIndex((tag) => tag.title === result.title) === -1;
         }
         return _.filter(source, isMatch)
     }
+
 
     handleSelectionChange = (event, { result }) => {
         this.setState({ isSection: true });
@@ -83,40 +81,30 @@ class TagInput extends React.Component {
             this.setState({ tags: tags, value: currentTag.title });
         }
         var value = event.target.value;
-        var tagNotExist = this.state.tags.findIndex((item) => {
-            return item.title === value;
+        var tagNotExist = this.state.tags.findIndex((tag) => {
+            return tag.title === value;
         }) === -1
         if (event.keyCode === KeyCodes.enter && !this.state.isSection && tagNotExist) {
             this.setState({ value: '', tags: [...this.state.tags, { title: value }]})
         }
     }
     render() {
-        const { isLoading, value, results } = this.state
+        const { isLoading, value, tags } = this.state
 
-        return (
-            <Grid stackable>
-                <Grid.Column width={8}>
-                    <Search
-                        onKeyPress = { this.handleKeyPress }
-                        onSelectionChange = { this.handleSelectionChange }
-                        onKeyDown={this.handleKeyDown}
-                        loading={isLoading}
-                        onResultSelect={this.handleResultSelect}
-                        onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })}
-                        results={results}
-                        value={value}
-                        {...this.props}
-                    />
-                </Grid.Column>
-                <Grid.Column width={4}>
-                    {
-                        this.state.tags.map((item, index) => <Label key={index} as='a' color='teal' tag>{item.title}</Label>)
-                    }
-                </Grid.Column>
-
-            </Grid>
-        )
+        return <TagInput
+            isLoading={isLoading}
+            value={value}
+            source={source}
+            tags={tags}
+            handleKeyPress={this.handleKeyPress}
+            handleSelectionChange={this.handleSelectionChange}
+            handleKeyDown={this.handleKeyDown}
+            handleResultSelect={this.handleResultSelect}
+            handleSearchChange={this.handleSearchChange}
+            noResultsMessage={'Добавить тег'}
+            props = {this.props}
+        />
     }
 }
 
-export default TagInput
+export default TagInputContainer

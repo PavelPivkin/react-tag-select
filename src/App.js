@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import TagInput from './components/tags-input/tags-input'
+import TagInputContainer from './containers/tag-input-conatiner/tag-input-container'
 
 class App extends Component {
   render() {
     return (
-
-      <TagInput/>
+      <TagInputContainer/>
     );
   }
 }
