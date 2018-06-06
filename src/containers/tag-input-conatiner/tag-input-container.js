@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
-import { Search, Grid, Label } from 'semantic-ui-react'
 import TagInput from '../../components/tag-input/tag-input'
+
 const KeyCodes = {
     comma: 188,
     enter: 13,
@@ -41,11 +41,13 @@ class TagInputContainer extends React.Component {
 
     resetComponent = () => this.setState({ isLoading: false, results: [], value: '' })
 
-    handleResultSelect = (e, { result }) => this.setState({ value: '', tags: [...this.state.tags, result] })
+    handleResultSelect = (e, { result }) => {
+        //this.props.onTagsListChange
+        this.setState({ value: '', tags: [...this.state.tags, result] })
+    }
 
     handleSearchChange = (e, { value }) => {
         this.setState({ isLoading: true, value: value })
-
         setTimeout(() => {
             if (this.state.value.length < 1) return this.resetComponent()
             this.setState({
@@ -79,28 +81,37 @@ class TagInputContainer extends React.Component {
             const tags = this.state.tags.slice(0, this.state.tags.length);
             const currentTag = tags.pop();
             this.setState({ tags: tags, value: currentTag.title });
+            //this.props.onTagsListChange
         }
         var value = event.target.value;
         var tagNotExist = this.state.tags.findIndex((tag) => {
             return tag.title === value;
         }) === -1
         if (event.keyCode === KeyCodes.enter && !this.state.isSection && tagNotExist) {
+            //this.props.onTagsListChange
             this.setState({ value: '', tags: [...this.state.tags, { title: value }]})
         }
     }
+
+    handleDelete = (event) => {
+        const tags = this.state.tags.filter((item, index) => parseInt(event.target.dataset.id) !== index);
+        this.setState({ tags: tags })
+    }
+
     render() {
-        const { isLoading, value, tags } = this.state
+        const { isLoading, value, tags, results } = this.state
 
         return <TagInput
             isLoading={isLoading}
             value={value}
-            source={source}
+            results={results}
             tags={tags}
             handleKeyPress={this.handleKeyPress}
             handleSelectionChange={this.handleSelectionChange}
             handleKeyDown={this.handleKeyDown}
             handleResultSelect={this.handleResultSelect}
             handleSearchChange={this.handleSearchChange}
+            handleDelete = {this.handleDelete}
             noResultsMessage={'Добавить тег'}
             props = {this.props}
         />
