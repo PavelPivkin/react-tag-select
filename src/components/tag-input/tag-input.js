@@ -21,28 +21,22 @@ export const TagInput = (
     }) => {
 
     return (
-        <Grid stackable>
-            <Grid.Column width={8}>
-                <Tags tags={tags} onDelete={handleDelete}/>
-            </Grid.Column>
-            <Grid.Column width={8}>
-                <Search
-                    onKeyPress = { handleKeyPress }
-                    onSelectionChange = { handleSelectionChange }
-                    onKeyDown={handleKeyDown}
-                    loading={isLoading}
-                    onResultSelect={handleResultSelect}
-                    onSearchChange={_.debounce(handleSearchChange, 500, { leading: true })}
-                    results={results}
-                    value={value}
-                    noResultsMessage = {noResultsMessage}
-                    icon='tags'
-                    fluid
-                    {...props}
-                />
-            </Grid.Column>
-
-        </Grid>
+        <div>
+            <Search
+                onKeyPress = { handleKeyPress }
+                onSelectionChange = { handleSelectionChange }
+                onKeyDown={handleKeyDown}
+                loading={isLoading}
+                onResultSelect={handleResultSelect}
+                onSearchChange={_.debounce(handleSearchChange, 500, { leading: true })}
+                results={results}
+                value={value}
+                noResultsMessage = {noResultsMessage}
+                icon='tags'
+                {...props}
+            />
+            <Tags tags={tags} onDelete={handleDelete}/>
+        </div>
     )
 }
 
